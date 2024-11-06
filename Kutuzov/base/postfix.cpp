@@ -1,6 +1,9 @@
 ﻿#include "postfix.h"
 #include "stack.h"
 
+// Тесты с posftix.cpp работать не хотят, sample с реализацией в postfix.h не хочет работать, не знаю что с этим пока делать
+
+
 /*
 std::vector<MathObject*>& TPostfix::ToPostfix()
 {
