@@ -30,7 +30,7 @@ public:
 
 	// Utility functions
 	bool empty() { return Top == -1; }
-	bool full() { return Top == size() - 1; }
+	bool full() { return Top == Size - 1; }
 	size_t size() { return Top; }
 
 	// Stack functions

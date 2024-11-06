@@ -6,6 +6,13 @@ TEST(TStack, can_create_stack_with_positive_length)
   ASSERT_NO_THROW(TStack<int> st(5));
 }
 
+TEST(TStack, empty_by_default)
+{
+	TStack<int> st(5);
+
+	EXPECT_EQ(true, st.empty());
+}
+
 TEST(TStack, can_push_elements)
 {
 	TStack<int> st(5);
