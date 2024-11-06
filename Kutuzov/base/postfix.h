@@ -178,7 +178,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				GetMathObjectPointer(Obj);
 
 				OutMathObject = Obj;
-				OutString = CurrentString.substr(i + 2, CurrentString.size() - 2 - i);
+				OutString = CurrentString.substr(i + 1, CurrentString.size() - 1 - i);
 
 				return true;
 			}
@@ -189,7 +189,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				GetMathObjectPointer(Obj);
 
 				OutMathObject = Obj;
-				OutString = CurrentString.substr(2 + i, CurrentString.size() - 2 - i);
+				OutString = CurrentString.substr(i + 1, CurrentString.size() - 1 - i);
 
 				return true;
 			}

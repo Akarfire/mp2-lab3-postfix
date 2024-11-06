@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
 	string expression;
-	TPostfix postfix("a + 5*big(10 + 7.3) / (a + big) * 10");
+	TPostfix postfix("");
 	double res;
 
 	//setlocale(LC_ALL, "Russian");
@@ -19,7 +19,12 @@ int main()
 	{
 		postfix.ToPostfix();
 		//cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
-		std::map<std::string, double> Args = { {"a", 100}, {"big", 2.15} };
+		std::map<std::string, double> Args = {
+		{"a", 5},
+		{"b", 3},
+		{"c", 2},
+		{"d", 10}
+		};
 
 		res = postfix.Calculate(Args);
 		std::cout << res << endl;
