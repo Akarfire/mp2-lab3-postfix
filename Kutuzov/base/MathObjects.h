@@ -10,6 +10,7 @@ class MathObject
 {
 protected:
 	MathObjectType Type;
+	std::string Name;
 
 public:
 	MathObject()
@@ -18,7 +19,7 @@ public:
 	}
 
 	virtual double GetValue(std::map<std::string, double>& UserVariables, TStack<double>& CalculationStack) = 0;
-	MathObjectType GetType() { return Type; }
+	MathObjectType& GetType() { return Type; }
 };
 
 class MathFunction : public MathObject
@@ -47,7 +48,7 @@ class Constant final: public MathObject
 	double Value;
 
 public:
-	Constant(double InConst): MathObject(), Value(InConst)
+	Constant(const double InConst): MathObject(), Value(InConst)
 	{
 		Type = Operand;
 	}
@@ -60,7 +61,7 @@ class UserVariable final : public MathObject
 	std::string VarName;
 
 public:
-	UserVariable(std::string& InVarName): MathObject(), VarName(InVarName)
+	UserVariable(const std::string& InVarName): MathObject(), VarName(InVarName)
 	{
 		Type = Operand;
 	}
@@ -73,5 +74,7 @@ public:
 		else
 			throw std::runtime_error("No Such User Variable: " + VarName);
 	}
+
+	const std::string& GetVarName() { return VarName; }
 };
 

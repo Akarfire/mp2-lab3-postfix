@@ -13,6 +13,44 @@ TEST(TStack, empty_by_default)
 	EXPECT_EQ(true, st.empty());
 }
 
+TEST(TStack, can_get_size)
+{
+	TStack<int> st(5);
+
+	ASSERT_NO_THROW(st.Push(2));
+	ASSERT_NO_THROW(st.Push(1));
+
+	EXPECT_EQ(2, st.size());
+}
+
+TEST(TStack, can_get_full)
+{
+	TStack<int> st(3);
+
+	ASSERT_NO_THROW(st.Push(2));
+	ASSERT_NO_THROW(st.Push(1));
+
+	EXPECT_EQ(false, st.full());
+
+	ASSERT_NO_THROW(st.Push(3));
+
+	EXPECT_EQ(true, st.full());
+}
+
+TEST(TStack, can_get_empty)
+{
+	TStack<int> st(3);
+
+	ASSERT_NO_THROW(st.Push(2));
+	ASSERT_NO_THROW(st.Pop());
+
+	EXPECT_EQ(true, st.empty());
+
+	ASSERT_NO_THROW(st.Push(3));
+
+	EXPECT_EQ(false, st.empty());
+}
+
 TEST(TStack, can_push_elements)
 {
 	TStack<int> st(5);

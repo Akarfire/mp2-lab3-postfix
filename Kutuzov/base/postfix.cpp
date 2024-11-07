@@ -3,8 +3,6 @@
 
 // Тесты с posftix.cpp работать не хотят, sample с реализацией в postfix.h не хочет работать, не знаю что с этим пока делать
 
-
-/*
 std::vector<MathObject*>& TPostfix::ToPostfix()
 {
 	TStack<MathFunction*> OperationStack(Infix.size());
@@ -131,7 +129,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 			if (CurrentLex.size() == 0)
 			{
 				LBracket* Obj;
-				GetMathObjectPointer(Obj);
+				GetMathFunctionPointer(Obj, "(");
 
 				OutMathObject = Obj;
 				OutString = CurrentString.substr(i + 1, CurrentString.size() - 1 - i);
@@ -143,7 +141,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 			if (CurrentLex == "sin")
 			{
 				Sin* Obj;
-				GetMathObjectPointer(Obj);
+				GetMathFunctionPointer(Obj, "sin");
 
 				OutMathObject = Obj;
 				OutString = CurrentString.substr(i + 1, CurrentString.size() - 1 - i);
@@ -154,7 +152,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 			else if (CurrentLex == "cos")
 			{
 				Cos* Obj;
-				GetMathObjectPointer(Obj);
+				GetMathFunctionPointer(Obj, "cos");
 
 				OutMathObject = Obj;
 				OutString = CurrentString.substr(i + 1, CurrentString.size() - 1 - i);
@@ -166,8 +164,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 
 			else if (IsValidNumber(CurrentLex))
 			{
-				OutMathObject = new Constant(std::stod(CurrentLex));
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetConstantPointer(std::stod(CurrentLex), CurrentLex);
 				OutString = '*' + CurrentString.substr(i, CurrentString.size() - i);
 
 				return true;
@@ -175,8 +172,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 
 			else if (IsValidVariableName(CurrentLex))
 			{
-				OutMathObject = new UserVariable(CurrentLex);
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetUserVariablePointer(CurrentLex);
 				OutString = '*' + CurrentString.substr(i, CurrentString.size() - i);
 
 				return true;
@@ -202,7 +198,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				if (CurrentString[i] == '+')
 				{
 					Add* Obj;
-					GetMathObjectPointer(Obj);
+					GetMathFunctionPointer(Obj, "+");
 
 					OutMathObject = Obj;
 					OutString = CurrentString.substr(1 + i, CurrentString.size() - 1 - i);
@@ -213,7 +209,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				if (CurrentString[i] == '-')
 				{
 					Subtract* Obj;
-					GetMathObjectPointer(Obj);
+					GetMathFunctionPointer(Obj, "-");
 
 					OutMathObject = Obj;
 					OutString = CurrentString.substr(1 + i, CurrentString.size() - 1 - i);
@@ -224,7 +220,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				if (CurrentString[i] == '*')
 				{
 					Multiply* Obj;
-					GetMathObjectPointer(Obj);
+					GetMathFunctionPointer(Obj, "*");
 
 					OutMathObject = Obj;
 					OutString = CurrentString.substr(1 + i, CurrentString.size() - 1 - i);
@@ -235,7 +231,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 				if (CurrentString[i] == '/')
 				{
 					Divide* Obj;
-					GetMathObjectPointer(Obj);
+					GetMathFunctionPointer(Obj, "/");
 
 					OutMathObject = Obj;
 					OutString = CurrentString.substr(1 + i, CurrentString.size() - 1 - i);
@@ -249,8 +245,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 			// VALUES
 			else if (IsValidNumber(CurrentLex))
 			{
-				OutMathObject = new Constant(std::stod(CurrentLex));
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetConstantPointer(std::stod(CurrentLex), CurrentLex);
 				OutString = CurrentString.substr(i, CurrentString.size() - i);
 
 				return true;
@@ -258,8 +253,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 
 			else if (IsValidVariableName(CurrentLex))
 			{
-				OutMathObject = new UserVariable(CurrentLex);
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetUserVariablePointer(CurrentLex);
 				OutString = CurrentString.substr(i, CurrentString.size() - i);
 
 				return true;
@@ -283,8 +277,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 
 			if (IsValidNumber(CurrentLex))
 			{
-				OutMathObject = new Constant(std::stod(CurrentLex));
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetConstantPointer(std::stod(CurrentLex), CurrentLex);
 				OutString = "";
 
 				return true;
@@ -292,8 +285,7 @@ bool TPostfix::AnalyzeNextLex(std::string& OutString, MathObject*& OutMathObject
 
 			else if (IsValidVariableName(CurrentLex))
 			{
-				OutMathObject = new UserVariable(CurrentLex);
-				DeletionList.push_back(OutMathObject);
+				OutMathObject = GetUserVariablePointer(CurrentLex);
 				OutString = "";
 
 				return true;
@@ -343,6 +335,23 @@ bool TPostfix::IsValidVariableName(std::string& InString)
 	return true;
 }
 
+std::vector<std::string> TPostfix::GetVariableNames()
+{
+	std::vector<std::string> OutVector;
+	if (Postfix.size() == 0)
+		return OutVector;
+
+	for (auto i: MathObjectBuffer)
+		if (i.second->GetType() == Operand)
+		{
+			UserVariable* Var = dynamic_cast<UserVariable*>(i.second);
+			if (Var)
+				OutVector.push_back(Var->GetVarName());
+		}
+
+	return OutVector;
+}
+
 double TPostfix::Calculate(std::map<std::string, double> UserVariables)
 {
 	if (Postfix.size() == 0)
@@ -357,4 +366,3 @@ double TPostfix::Calculate(std::map<std::string, double> UserVariables)
 
 	return CalculationStack.Pop();
 }
-*/

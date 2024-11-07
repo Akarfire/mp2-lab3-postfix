@@ -6,33 +6,84 @@ using namespace std;
 
 int main()
 {
-	string expression;
-	TPostfix postfix("");
-	double res;
+	std::cout << "Postfix Sample Program" << std::endl << "+, -, *, /, sin, cos; No numbers in variable names" << std::endl;
 
-	//setlocale(LC_ALL, "Russian");
-	//cout << "Введите арифметическое выражение: ";
-	//cin >> expression;
-	//cout << expression << endl;
-	std::cout << "Math Expression: " << postfix.GetInfix() << endl;
-	try
+	bool Running = true;
+	while (Running)
 	{
-		postfix.ToPostfix();
-		//cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
-		std::map<std::string, double> Args = {
-		{"a", 5},
-		{"b", 3},
-		{"c", 2},
-		{"d", 10}
-		};
+		std::string Expression;
 
-		res = postfix.Calculate(Args);
-		std::cout << res << endl;
-	}
+		std::cout << "Enter Your Math Expression ('end' to exit): ";
+		std::getline(std::cin, Expression);
 
-	catch (std::exception& e)
-	{
-		std::cout << e.what();
+		if (Expression == "end")
+			break;
+
+		TPostfix Postfix(Expression);
+
+		std::vector<std::string> Variables;
+		std::map<std::string, double> Args = {};
+
+		double Result;
+		
+		try
+		{
+			Postfix.ToPostfix();
+			//cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
+
+		}
+		catch (std::exception& e)
+		{
+			std::cout << std::endl << "!CONVERSION ERROR!: " << std::endl << e.what() << std::endl;
+			continue;
+		}
+
+		Variables = Postfix.GetVariableNames();
+
+		for (auto var : Variables)
+		{
+			bool ValidValue = true;
+			double OutValue = 0.0;
+
+			do
+			{
+				std::cout << "Enter '" << var << "'" << " value: ";
+				std::string rec;
+				std::cin >> rec;
+
+				if (cin.fail())
+					cin.clear();
+
+				cin.ignore(INT_MAX, '\n');
+
+				ValidValue = true;
+				try
+				{
+					OutValue = std::stod(rec);
+				}
+				catch (std::invalid_argument exception)
+				{
+					ValidValue = false;
+					std::cout << std::endl << "Invalid value, please try again!" << std::endl;
+				}
+
+
+			} while (!ValidValue);
+
+			Args[var] = OutValue;
+		}
+
+		try
+		{
+			Result = Postfix.Calculate(Args);
+		}
+		catch (std::exception& e)
+		{
+			std::cout << std::endl << "!CALCULATION ERROR!: " << std::endl << e.what() << std::endl;
+			continue;
+		}
+
+		std::cout << std::endl << "Result: " << Result << std::endl;
 	}
 
 	return 0;
